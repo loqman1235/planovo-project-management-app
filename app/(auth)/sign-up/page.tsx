@@ -1,4 +1,6 @@
+import { AuthForm } from "../_components/AuthForm";
+
 const SignUpPage = () => {
-  return <div>SignUpPage</div>;
+  return <AuthForm currentPage="sign-up" />;
 };
 export default SignUpPage;

@@ -15,7 +15,7 @@
     --secondary-foreground: 243 75% 59%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: 203 75% 59%;
     --accent-foreground: 243 75% 59%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -29,6 +29,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
+    /* TEXT */
     --text-primary: 240 4% 90%;
     --text-secondary: 240 5% 65%;
     --text-tertiary: 240 4 45%;
@@ -63,5 +64,11 @@
 @layer base {
   body {
     @apply bg-background text-text-primary;
+  }
+}
+
+@layer utilities {
+  .bg-primary-gradient {
+    @apply bg-gradient-to-t from-primary to-accent;
   }
 }
