@@ -1,4 +1,8 @@
 const SignInPage = () => {
-  return <div>SignInPage</div>;
+  return (
+    <div className="bg-primary">
+      <p className="">hello</p>
+    </div>
+  );
 };
 export default SignInPage;
