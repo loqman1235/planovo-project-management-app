@@ -1,6 +1,8 @@
 "use client";
 
+import { GoogleSignInBtn } from "@/components/GoogleSignInBtn";
 import { H3 } from "@/components/H3";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 type AuthFormProps = {
@@ -39,9 +42,24 @@ export const AuthForm = ({ currentPage }: AuthFormProps) => {
       {/* FORM */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          {!isSignInPage && (
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
@@ -69,8 +87,36 @@ export const AuthForm = ({ currentPage }: AuthFormProps) => {
               </FormItem>
             )}
           />
+          <Button className="w-full">Sign In</Button>
+
+          <div className="flex items-center gap-1 text-sm">
+            {isSignInPage ? (
+              <>
+                <p>Don&apos;t have an account?</p>
+                <Link href="/sign-up" className="text-primary hover:underline">
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <>
+                <p>Already have an account?</p>
+                <Link href="/sign-in" className="text-primary hover:underline">
+                  Sign In
+                </Link>
+              </>
+            )}
+          </div>
         </form>
       </Form>
+
+      {/* DIVIDER */}
+      <div className="relative w-full">
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm bg-foreground px-2">
+          OR
+        </span>
+        <div className="w-full border border-border" />
+      </div>
+      <GoogleSignInBtn />
     </div>
   );
 };
