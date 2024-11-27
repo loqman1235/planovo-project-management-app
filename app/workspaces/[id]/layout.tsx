@@ -9,11 +9,9 @@ const WorkspaceLayout = ({ children }: WorkspacesLayoutProps) => {
   return (
     <main className="w-full h-screen flex">
       <Sidebar workspaceId="1" />
-      <div className="flex-grow p-2 pl-0">
-        <div className="rounded-md bg-foreground border border-border p-5">
-          <Navbar />
-          {children}
-        </div>
+      <div className="flex-grow bg-foreground p-5 min-h-screen overflow-y-auto">
+        <Navbar />
+        {children}
       </div>
     </main>
   );

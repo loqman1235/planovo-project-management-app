@@ -34,7 +34,7 @@ export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
   ];
 
   return (
-    <aside className="relative h-full w-[var(--sidebar-width)]  py-5">
+    <aside className="relative h-full w-[var(--sidebar-width)] py-5 border-r border-r-border">
       <div className="absolute top-0 left-0   bg-primary w-[40px] h-[40px] rounded-full blur-[60px] -z-10"></div>
 
       <div className="px-5">
