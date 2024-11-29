@@ -9,8 +9,8 @@ type AssignedTaskProps = {
 
 export const AssignedTask = ({ title, projectName }: AssignedTaskProps) => {
   return (
-    <div className="flex flex-col gap-2 bg-card-foreground p-5 rounded-md border border-border-light">
-      <h5 className="font-bold tracking-[-0.18px] text-text-primary">
+    <div className="flex flex-col bg-card-foreground p-4 rounded-md border border-border-light">
+      <h5 className="text-sm font-semibold tracking-[-0.18px] text-text-primary">
         {title}
       </h5>
       <ul className="text-text-secondary flex items-center gap-2 text-sm">

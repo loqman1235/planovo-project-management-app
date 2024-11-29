@@ -15,7 +15,7 @@ export const SidebarLink = ({ link }: SidebarLinkProps) => {
   const isLinkActive = pathname === link.href;
 
   const activeLinkClasses = isLinkActive
-    ? "sidebar-link-gradient border-t border-t-border-light text-text-primary shadow-md"
+    ? "sidebar-link-gradient text-text-primary shadow-md"
     : "text-text-secondary";
 
   return (
