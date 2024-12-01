@@ -7,11 +7,12 @@ export interface Task {
 export interface Column {
   id: string;
   title: string;
-  taskIds: string[];
+  type: "todo" | "inProgress" | "inReview" | "done";
 }
 
-export interface KanbanData {
-  tasks: Record<string, Task>;
-  columns: Record<string, Column>;
-  columnOrder: string[];
+export enum ColumnType {
+  todo = "todo",
+  inProgress = "inProgress",
+  inReview = "inReview",
+  done = "done",
 }

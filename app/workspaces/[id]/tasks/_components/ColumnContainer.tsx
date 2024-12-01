@@ -18,6 +18,7 @@ import { Task } from "@/types";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
+import { useDroppable } from "@dnd-kit/core";
 
 type ColumnContainerProps = {
   id: string;
@@ -34,6 +35,9 @@ export const ColumnContainer = ({
   createTask,
   tasks,
 }: ColumnContainerProps) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id,
+  });
   const [open, setOpen] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
 
@@ -45,7 +49,12 @@ export const ColumnContainer = ({
   };
 
   return (
-    <Card className="w-full min-h-[253px]">
+    <Card
+      ref={setNodeRef}
+      className={`w-full min-h-[253px] ${
+        isOver && "border border-border-light"
+      }`}
+    >
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${columnType[type]}`} />
@@ -90,7 +99,7 @@ export const ColumnContainer = ({
 
       <CardContent className="flex flex-col gap-2">
         {tasks.map((task) => (
-          <TaskContainer key={task.id} task={task} />
+          <TaskContainer key={task.id} task={task} columnId={id} />
         ))}
       </CardContent>
     </Card>

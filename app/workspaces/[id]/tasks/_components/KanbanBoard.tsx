@@ -2,51 +2,84 @@
 
 import { useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
-import { Task } from "@/types";
+import { Column, ColumnType, Task } from "@/types";
+import {
+  DndContext,
+  DragEndEvent,
+  useSensors,
+  useSensor,
+  PointerSensor,
+  KeyboardSensor,
+  closestCorners,
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 export const KanbanBoard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [columns] = useState<Column[]>([
+    { id: "1", title: "To Do", type: ColumnType.todo },
+    { id: "2", title: "In Progress", type: ColumnType.inProgress },
+    { id: "3", title: "In Review", type: ColumnType.inReview },
+    { id: "4", title: "Done", type: ColumnType.done },
+  ]);
 
   const createTask = (columnId: string, title: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      columnId,
-      title,
-    };
+    if (title.trim() !== "") {
+      const newTask: Task = {
+        id: Date.now().toString(),
+        columnId,
+        title,
+      };
 
-    setTasks([...tasks, newTask]);
+      setTasks([...tasks, newTask]);
+    }
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const activeTask = tasks.find((task) => task.id === active.id);
+    if (activeTask && activeTask.columnId !== over.id) {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === active.id
+            ? { ...task, columnId: over.id as string }
+            : task
+        )
+      );
+    }
+  };
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <ColumnContainer
-        id="1"
-        title="To Do"
-        type="todo"
-        createTask={createTask}
-        tasks={tasks.filter((task) => task.columnId === "1")}
-      />
-      <ColumnContainer
-        id="2"
-        title="In Progress"
-        type="inProgress"
-        createTask={createTask}
-        tasks={tasks.filter((task) => task.columnId === "2")}
-      />
-      <ColumnContainer
-        id="3"
-        title="In Review"
-        type="inReview"
-        createTask={createTask}
-        tasks={tasks.filter((task) => task.columnId === "3")}
-      />
-      <ColumnContainer
-        id="4"
-        title="Done"
-        type="done"
-        createTask={createTask}
-        tasks={tasks.filter((task) => task.columnId === "4")}
-      />
-    </div>
+    <DndContext
+      sensors={sensors}
+      onDragEnd={handleDragEnd}
+      collisionDetection={closestCorners}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {columns.map((column) => (
+          <ColumnContainer
+            key={column.id}
+            id={column.id}
+            title={column.title}
+            type={column.type as ColumnType}
+            createTask={createTask}
+            tasks={tasks.filter((task) => task.columnId === column.id)}
+          />
+        ))}
+      </div>
+    </DndContext>
   );
 };
