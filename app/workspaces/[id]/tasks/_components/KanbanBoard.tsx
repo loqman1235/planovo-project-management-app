@@ -12,7 +12,7 @@ import {
   KeyboardSensor,
   closestCorners,
 } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 export const KanbanBoard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -52,16 +52,28 @@ export const KanbanBoard = () => {
     if (!over) return;
 
     const activeTask = tasks.find((task) => task.id === active.id);
-    if (activeTask && activeTask.columnId !== over.id) {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === active.id
-            ? { ...task, columnId: over.id as string }
-            : task
-        )
-      );
+    if (activeTask) {
+      if (activeTask.columnId !== over.id) {
+        // If task moved to a different column
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === active.id
+              ? { ...task, columnId: over.id as string }
+              : task
+          )
+        );
+      } else {
+        // If task was dropped in the same column, reorder tasks
+        const activeIndex = tasks.findIndex((task) => task.id === active.id);
+        const overIndex = tasks.findIndex((task) => task.id === over.id);
+
+        // Reorder tasks in the same column based on their position
+        const reorderedTasks = arrayMove(tasks, activeIndex, overIndex);
+        setTasks(reorderedTasks);
+      }
     }
   };
+
   return (
     <DndContext
       sensors={sensors}

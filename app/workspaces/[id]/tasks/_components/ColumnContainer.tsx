@@ -19,6 +19,10 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
 import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 type ColumnContainerProps = {
   id: string;
@@ -98,9 +102,14 @@ export const ColumnContainer = ({
       </div>
 
       <CardContent className="flex flex-col gap-2">
-        {tasks.map((task) => (
-          <TaskContainer key={task.id} task={task} columnId={id} />
-        ))}
+        <SortableContext
+          items={tasks.filter((task) => task.columnId === id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.map((task) => (
+            <TaskContainer key={task.id} task={task} columnId={id} />
+          ))}
+        </SortableContext>
       </CardContent>
     </Card>
   );
