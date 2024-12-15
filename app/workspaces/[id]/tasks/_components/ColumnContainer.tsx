@@ -14,55 +14,47 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { Task } from "@/types";
+import { ColumnType, Task } from "@/types";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
-import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useKanbanBoard } from "@/context/KanbanBoardContext";
 
 type ColumnContainerProps = {
   id: string;
   title: string;
-  type: "todo" | "inProgress" | "inReview" | "done";
-  createTask: (id: string, title: string) => void;
+  type: ColumnType;
   tasks: Task[];
 };
 
 export const ColumnContainer = ({
-  id,
+  // id,
   title,
   type,
-  createTask,
   tasks,
 }: ColumnContainerProps) => {
-  const { setNodeRef, isOver } = useDroppable({
-    id,
-  });
+  const { createTask, handleDragOver } = useKanbanBoard();
   const [open, setOpen] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
+  const isOver = false;
 
-  const columnType = {
-    todo: "bg-[var(--column-todo)]",
-    inProgress: "bg-[var(--column-inProgress)]",
-    inReview: "bg-[var(--column-inReview)]",
-    done: "bg-[var(--column-done)]",
+  const columnHeadingColor = {
+    backlog: "text-text-primary",
+    todo: "text-[var(--column-inProgress)]",
+    inProgress: "text-[var(--column-inReview)]",
+    done: "text-[var(--column-done)]",
   };
 
   return (
     <Card
-      ref={setNodeRef}
+      onDragOver={handleDragOver}
       className={`w-full min-h-[253px] ${
-        isOver && "border border-border-light"
+        isOver && "border-2 border-border-light"
       }`}
     >
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${columnType[type]}`} />
-          <H4>{title}</H4>
+          <H4 className={columnHeadingColor[type]}>{title}</H4>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -89,7 +81,9 @@ export const ColumnContainer = ({
             <DialogFooter>
               <Button
                 onClick={() => {
-                  createTask(id, taskTitle);
+                  if (taskTitle.trim().length === 0) return;
+
+                  createTask(taskTitle);
                   setTaskTitle("");
                   setOpen(false);
                 }}
@@ -102,14 +96,9 @@ export const ColumnContainer = ({
       </div>
 
       <CardContent className="flex flex-col gap-2">
-        <SortableContext
-          items={tasks.filter((task) => task.columnId === id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {tasks.map((task) => (
-            <TaskContainer key={task.id} task={task} columnId={id} />
-          ))}
-        </SortableContext>
+        {tasks.map((task) => (
+          <TaskContainer key={task.id} task={task} />
+        ))}
       </CardContent>
     </Card>
   );

@@ -1,26 +1,16 @@
 "use client";
 import { Divider } from "@/components/Divider";
+import { useKanbanBoard } from "@/context/KanbanBoardContext";
 import { Task } from "@/types";
 import { EllipsisIcon } from "lucide-react";
-import { CSS } from "@dnd-kit/utilities";
-import { useDraggable } from "@dnd-kit/core";
 
 type TaskContainerProps = {
   task: Task;
-  columnId: string;
 };
 
 export const TaskContainer = ({ task }: TaskContainerProps) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: task.id,
-    });
-
-  const style = transform
-    ? {
-        transform: CSS.Translate.toString(transform),
-      }
-    : undefined;
+  const { handleDragStart, handleDragEnd, handleDrag } = useKanbanBoard();
+  const isDragging = false;
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering drag events
@@ -28,10 +18,10 @@ export const TaskContainer = ({ task }: TaskContainerProps) => {
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
+      onDrag={() => handleDrag(task.id)}
+      onDragStart={() => handleDragStart(task.id)}
+      onDragEnd={handleDragEnd}
+      draggable
       className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light
         cursor-grab active:cursor-grabbing ${isDragging && "shadow-xl"}
         `}

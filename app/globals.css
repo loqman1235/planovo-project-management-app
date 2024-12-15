@@ -41,7 +41,7 @@
     --sidebar-link-active-bg: 240 4% 18%;
 
     /* COLUMN TYPES */
-    --column-todo: #6e6e76;
+    --column-backlog: #a0a0a8;
     --column-inProgress: #3b82f6;
     --column-inReview: #f59e0b;
     --column-done: #10b981;
