@@ -1,16 +1,16 @@
 "use client";
 import { Divider } from "@/components/Divider";
-import { useKanbanBoard } from "@/context/KanbanBoardContext";
 import { Task } from "@/types";
 import { EllipsisIcon } from "lucide-react";
+import { useKanbanBoard } from "../_context/KanbanBoardContext";
 
 type TaskContainerProps = {
   task: Task;
 };
 
 export const TaskContainer = ({ task }: TaskContainerProps) => {
-  const { handleDragStart, handleDragEnd, handleDrag } = useKanbanBoard();
-  const isDragging = false;
+  const { handleDragStart, handleDragEnd, handleDrag, draggingTaskId } =
+    useKanbanBoard();
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering drag events
@@ -22,8 +22,11 @@ export const TaskContainer = ({ task }: TaskContainerProps) => {
       onDragStart={() => handleDragStart(task.id)}
       onDragEnd={handleDragEnd}
       draggable
+      id={task.id}
       className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light
-        cursor-grab active:cursor-grabbing ${isDragging && "shadow-xl"}
+        cursor-grab active:cursor-grabbing ${
+          draggingTaskId === task.id && "opacity-10"
+        }
         `}
     >
       {/* HEADER */}

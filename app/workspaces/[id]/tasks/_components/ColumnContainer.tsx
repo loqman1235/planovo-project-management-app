@@ -18,7 +18,8 @@ import { ColumnType, Task } from "@/types";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
-import { useKanbanBoard } from "@/context/KanbanBoardContext";
+import { motion } from "motion/react";
+import { useKanbanBoard } from "../_context/KanbanBoardContext";
 
 type ColumnContainerProps = {
   id: string;
@@ -28,15 +29,21 @@ type ColumnContainerProps = {
 };
 
 export const ColumnContainer = ({
-  // id,
+  id,
   title,
   type,
   tasks,
 }: ColumnContainerProps) => {
-  const { createTask, handleDragOver } = useKanbanBoard();
+  const {
+    createTask,
+    handleDragOver,
+    handleDrop,
+    dropTargetColumn,
+    dropIndex,
+    draggingTaskId,
+  } = useKanbanBoard();
   const [open, setOpen] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
-  const isOver = false;
 
   const columnHeadingColor = {
     backlog: "text-text-primary",
@@ -47,9 +54,10 @@ export const ColumnContainer = ({
 
   return (
     <Card
-      onDragOver={handleDragOver}
+      onDrop={(e) => handleDrop(e, id)}
+      onDragOver={(e) => handleDragOver(e, id, tasks)}
       className={`w-full min-h-[253px] ${
-        isOver && "border-2 border-border-light"
+        dropTargetColumn === id && "bg-card-foreground"
       }`}
     >
       <div className="flex items-center justify-between p-5">
@@ -83,7 +91,7 @@ export const ColumnContainer = ({
                 onClick={() => {
                   if (taskTitle.trim().length === 0) return;
 
-                  createTask(taskTitle);
+                  createTask(taskTitle, id);
                   setTaskTitle("");
                   setOpen(false);
                 }}
@@ -96,9 +104,48 @@ export const ColumnContainer = ({
       </div>
 
       <CardContent className="flex flex-col gap-2">
-        {tasks.map((task) => (
-          <TaskContainer key={task.id} task={task} />
+        {tasks.map((task, index) => (
+          <div key={task.id}>
+            {dropTargetColumn === id &&
+              dropIndex === index &&
+              draggingTaskId && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-[48px] bg-emerald-500/20 rounded-sm border border-dashed border-emerald-500 mb-2 flex items-center justify-center text-emerald-500"
+                >
+                  <p className="animate-bounce">Drop Here</p>
+                </motion.div>
+              )}
+            <motion.div
+              layoutId={task.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 20,
+              }}
+            >
+              <TaskContainer task={task} />
+            </motion.div>
+          </div>
         ))}
+
+        {dropTargetColumn === id &&
+          dropIndex === tasks.length &&
+          draggingTaskId && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2 }}
+              className="h-[48px] bg-emerald-500/20 rounded-sm border border-dashed border-emerald-500 flex items-center justify-center text-emerald-500"
+            >
+              <p className="animate-bounce">Drop Here</p>
+            </motion.div>
+          )}
       </CardContent>
     </Card>
   );
