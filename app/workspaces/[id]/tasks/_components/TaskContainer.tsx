@@ -40,7 +40,7 @@ export const TaskContainer = ({ task }: TaskContainerProps) => {
         ref={setNodeRef}
         {...attributes}
         style={style}
-        className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light h-[120px] opacity-50
+        className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border-2 border-dashed border-border-light h-[120px] opacity-50
         `}
       ></div>
     );
