@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ColumnType, Task } from "@/types";
-import { ChartNoAxesColumnDecreasingIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
 import { useKanbanBoard } from "../_context/KanbanBoardContext";
