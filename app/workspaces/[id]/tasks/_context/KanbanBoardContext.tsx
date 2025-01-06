@@ -15,9 +15,6 @@ type KanbanBoardContext = {
   columns: Column[];
   setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
   createTask: (title: string, collId: string) => void;
-  handleDragStart: (e: DragStartEvent) => void;
-  handleDragEnd: (e: DragEndEvent) => void;
-  handleDragOver: (e: DragOverEvent) => void;
   activeTask?: Task | null;
 };
 
@@ -25,9 +22,6 @@ export const KanbanBoardContext = createContext<KanbanBoardContext>({
   columns: INITIAL_COLUMNS,
   setColumns: () => {},
   createTask: () => {},
-  handleDragStart: () => {},
-  handleDragEnd: () => {},
-  handleDragOver: () => {},
   activeTask: null,
 });
 
@@ -291,9 +285,6 @@ export const KanbanBoardProvider = ({
         columns,
         setColumns,
         createTask,
-        handleDragStart,
-        handleDragEnd,
-        handleDragOver,
         activeTask,
       }}
     >
