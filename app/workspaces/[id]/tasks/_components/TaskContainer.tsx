@@ -4,6 +4,7 @@ import { Task } from "@/types";
 import { EllipsisIcon } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { RiDraggable } from "react-icons/ri";
 
 type TaskContainerProps = {
   task: Task;
@@ -49,7 +50,6 @@ export const TaskContainer = ({ task }: TaskContainerProps) => {
     <div
       ref={setNodeRef}
       {...attributes}
-      {...listeners}
       style={style}
       id={task.id}
       className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light min-h-[120px]
@@ -57,9 +57,14 @@ export const TaskContainer = ({ task }: TaskContainerProps) => {
     >
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        <h5 className="font-semibold text-sm text-text-primary tracking-[-0.18px] capitalize">
-          {task.title}
-        </h5>
+        <div className="flex items-center gap-2">
+          <button {...listeners}>
+            <RiDraggable className="size-5 text-text-primary" />
+          </button>
+          <h5 className="font-semibold text-sm text-text-primary tracking-[-0.18px] capitalize">
+            {task.title}
+          </h5>
+        </div>
         <button onClick={handleMenuClick} className="text-text-primary">
           <EllipsisIcon className="size-4" />
         </button>

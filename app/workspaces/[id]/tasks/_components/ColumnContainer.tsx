@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ColumnType, Task } from "@/types";
-import { PlusIcon } from "lucide-react";
+import { ChartNoAxesColumnDecreasingIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
 import { useKanbanBoard } from "../_context/KanbanBoardContext";
@@ -54,7 +54,7 @@ export const ColumnContainer = ({
   };
 
   return (
-    <Card ref={setNodeRef} className={`w-full min-h-[253px]`}>
+    <Card ref={setNodeRef} className={`w-full min-h-[253px] `}>
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-2">
           <H4 className={columnHeadingColor[type]}>{title}</H4>

@@ -9,6 +9,11 @@ import {
   DragEndEvent,
   DragOverEvent,
   DragStartEvent,
+  useSensors,
+  useSensor,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
 } from "@dnd-kit/core";
 
 type KanbanBoardContext = {
@@ -279,6 +284,12 @@ export const KanbanBoardProvider = ({
     }
   };
 
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor)
+  );
+
   return (
     <KanbanBoardContext.Provider
       value={{
@@ -294,6 +305,7 @@ export const KanbanBoardProvider = ({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         collisionDetection={closestCorners}
+        sensors={sensors}
       >
         {children}
       </DndContext>
