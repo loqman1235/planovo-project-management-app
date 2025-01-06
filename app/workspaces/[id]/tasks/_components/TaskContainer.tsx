@@ -2,31 +2,57 @@
 import { Divider } from "@/components/Divider";
 import { Task } from "@/types";
 import { EllipsisIcon } from "lucide-react";
-import { useKanbanBoard } from "../_context/KanbanBoardContext";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type TaskContainerProps = {
   task: Task;
 };
 
 export const TaskContainer = ({ task }: TaskContainerProps) => {
-  const { handleDragStart, handleDragEnd, handleDrag, draggingTaskId } =
-    useKanbanBoard();
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "Task",
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering drag events
   };
 
+  if (isDragging) {
+    return (
+      <div
+        ref={setNodeRef}
+        {...attributes}
+        style={style}
+        className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light h-[120px] opacity-50
+        `}
+      ></div>
+    );
+  }
+
   return (
     <div
-      onDrag={() => handleDrag(task.id)}
-      onDragStart={() => handleDragStart(task.id)}
-      onDragEnd={handleDragEnd}
-      draggable
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
       id={task.id}
-      className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light
-        cursor-grab active:cursor-grabbing ${
-          draggingTaskId === task.id && "opacity-10"
-        }
+      className={`w-full flex flex-col bg-card-foreground p-5 rounded-md border border-border-light min-h-[120px]
         `}
     >
       {/* HEADER */}

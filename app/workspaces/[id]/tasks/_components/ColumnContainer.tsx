@@ -18,8 +18,10 @@ import { ColumnType, Task } from "@/types";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { TaskContainer } from "./TaskContainer";
-import { motion } from "motion/react";
 import { useKanbanBoard } from "../_context/KanbanBoardContext";
+import { DragOverlay, useDroppable } from "@dnd-kit/core";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { createPortal } from "react-dom";
 
 type ColumnContainerProps = {
   id: string;
@@ -34,14 +36,13 @@ export const ColumnContainer = ({
   type,
   tasks,
 }: ColumnContainerProps) => {
-  const {
-    createTask,
-    handleDragOver,
-    handleDrop,
-    dropTargetColumn,
-    dropIndex,
-    draggingTaskId,
-  } = useKanbanBoard();
+  const { setNodeRef } = useDroppable({
+    id,
+    data: {
+      type: "Column",
+    },
+  });
+  const { createTask, activeTask } = useKanbanBoard();
   const [open, setOpen] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
 
@@ -53,13 +54,7 @@ export const ColumnContainer = ({
   };
 
   return (
-    <Card
-      onDrop={(e) => handleDrop(e, id)}
-      onDragOver={(e) => handleDragOver(e, id, tasks)}
-      className={`w-full min-h-[253px] ${
-        dropTargetColumn === id && "bg-card-foreground"
-      }`}
-    >
+    <Card ref={setNodeRef} className={`w-full min-h-[253px]`}>
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-2">
           <H4 className={columnHeadingColor[type]}>{title}</H4>
@@ -104,48 +99,22 @@ export const ColumnContainer = ({
       </div>
 
       <CardContent className="flex flex-col gap-2">
-        {tasks.map((task, index) => (
-          <div key={task.id}>
-            {dropTargetColumn === id &&
-              dropIndex === index &&
-              draggingTaskId && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-[48px] bg-emerald-500/20 rounded-sm border border-dashed border-emerald-500 mb-2 flex items-center justify-center text-emerald-500"
-                >
-                  <p className="animate-bounce">Drop Here</p>
-                </motion.div>
-              )}
-            <motion.div
-              layoutId={task.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                type: "spring",
-                stiffness: 200,
-                damping: 20,
-              }}
-            >
-              <TaskContainer task={task} />
-            </motion.div>
-          </div>
-        ))}
+        <SortableContext
+          items={tasks.map((t) => t.id)}
+          strategy={rectSortingStrategy}
+        >
+          {tasks.map((task) => (
+            <TaskContainer key={task.id} task={task} />
+          ))}
 
-        {dropTargetColumn === id &&
-          dropIndex === tasks.length &&
-          draggingTaskId && (
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.2 }}
-              className="h-[48px] bg-emerald-500/20 rounded-sm border border-dashed border-emerald-500 flex items-center justify-center text-emerald-500"
-            >
-              <p className="animate-bounce">Drop Here</p>
-            </motion.div>
-          )}
+          {activeTask &&
+            createPortal(
+              <DragOverlay>
+                <TaskContainer task={activeTask} />
+              </DragOverlay>,
+              document.body
+            )}
+        </SortableContext>
       </CardContent>
     </Card>
   );
