@@ -12,6 +12,18 @@ import {
 } from "lucide-react";
 import { SidebarLink } from "./SidebarLink";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
   const sidebarLinks = [
@@ -51,9 +63,37 @@ export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
           <span className="text-xs text-text-tertiary uppercase tracking-wide">
             Workspaces
           </span>
-          <button className="w-4 h-4 rounded-full bg-text-primary flex items-center justify-center">
-            <PlusIcon className="text-background size-3" />
-          </button>
+          {/* ADD NEW WORKSPACE BUTTON */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="w-4 h-4 rounded-full bg-text-primary flex items-center justify-center">
+                <PlusIcon className="text-background size-3" />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create a new workspace</DialogTitle>
+              </DialogHeader>
+              <div className="py-4 space-y-5">
+                <div className="space-y-1">
+                  <Label htmlFor="title">Name</Label>
+                  <Input
+                    onChange={() => {}}
+                    id="title"
+                    placeholder="Workspace name"
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch id="isPublic" />
+                  <Label htmlFor="isPublic">Public</Label>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={() => {}}>Create</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <button className="w-full p-1.5 rounded-md border border-border-light bg-foreground flex items-center justify-between">
