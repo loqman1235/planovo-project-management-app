@@ -133,9 +133,37 @@ export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
           <span className="text-xs text-text-tertiary uppercase tracking-wide">
             Projects
           </span>
-          <button className="w-4 h-4 rounded-full bg-text-primary flex items-center justify-center">
-            <PlusIcon className="text-background size-3" />
-          </button>
+          {/* ADD NEW WORKSPACE BUTTON */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="w-4 h-4 rounded-full bg-text-primary flex items-center justify-center">
+                <PlusIcon className="text-background size-3" />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create a new project</DialogTitle>
+              </DialogHeader>
+              <div className="py-4 space-y-5">
+                <div className="space-y-1">
+                  <Label htmlFor="title">Name</Label>
+                  <Input
+                    onChange={() => {}}
+                    id="title"
+                    placeholder="Project name"
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch id="isPublic" />
+                  <Label htmlFor="isPublic">Public</Label>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={() => {}}>Create</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <ul className="flex flex-col gap-5">
