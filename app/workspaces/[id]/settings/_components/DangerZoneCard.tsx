@@ -1,3 +1,4 @@
+import { Divider } from "@/components/Divider";
 import { H4 } from "@/components/H4";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 export const DangerZoneCard = () => {
   return (
     <Card>
-      <CardHeader className="gap-1">
+      <CardHeader className="gap-1 !pb-0">
         <H4>Danger Zone</H4>
         <span className="capitalize text-sm text-text-secondary !m-0">
           Deleting a workspace is irreversible and will remove all associated
@@ -13,7 +14,8 @@ export const DangerZoneCard = () => {
         </span>
       </CardHeader>
       <CardContent>
-        <Button className="bg-destructive/10 text-destructive hover:bg-destructive/20 py-5">
+        <Divider />
+        <Button variant="destructive" className="py-5">
           Delete workspace
         </Button>
       </CardContent>
