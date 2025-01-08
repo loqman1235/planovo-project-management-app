@@ -10,7 +10,7 @@ import { DragOverlay, useDroppable } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 
-import { CreateNewTaskBtn } from "./CreateTaskForm";
+import { CreateNewTaskBtn } from "./CreateNewTaskBtn";
 
 type ColumnContainerProps = {
   id: string;

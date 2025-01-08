@@ -21,7 +21,7 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useKanbanBoard } from "../_context/KanbanBoardContext";
 
-type CreateTaskFormProps = {
+type CreateNewTaskBtnProps = {
   id: string;
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -31,7 +31,7 @@ export const CreateNewTaskBtn = ({
   id,
   open,
   setOpen,
-}: CreateTaskFormProps) => {
+}: CreateNewTaskBtnProps) => {
   const { createTask } = useKanbanBoard();
   const [taskTitle, setTaskTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
