@@ -22,6 +22,13 @@ import { useKanbanBoard } from "../_context/KanbanBoardContext";
 import { DragOverlay, useDroppable } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type ColumnContainerProps = {
   id: string;
@@ -45,6 +52,7 @@ export const ColumnContainer = ({
   const { createTask, activeTask } = useKanbanBoard();
   const [open, setOpen] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const columnHeadingColor = {
     backlog: "text-text-primary",
@@ -69,7 +77,7 @@ export const ColumnContainer = ({
             <DialogHeader>
               <DialogTitle>Add a new task</DialogTitle>
             </DialogHeader>
-            <div className="py-4">
+            <div className="py-4 space-y-4">
               <div className="space-y-1">
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -79,7 +87,45 @@ export const ColumnContainer = ({
                   value={taskTitle}
                 />
               </div>
-              {/* TODO: add assignee and project selection */}
+              <div className="space-y-1">
+                <Label htmlFor="dueDate">Due date</Label>
+                <Input
+                  type="date"
+                  onChange={(e) => setDueDate(e.target.value)}
+                  id="dueDate"
+                  placeholder="Select due date"
+                  value={dueDate}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="assignee">Assignee</Label>
+                <Select>
+                  <SelectTrigger id="assignee" className="w-full">
+                    <SelectValue placeholder="Select assignee" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="johndie">John Doe</SelectItem>
+                    <SelectItem value="dark">Jane Smith</SelectItem>
+                    <SelectItem value="system">Sam McLaren</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="project">Project</Label>
+                <Select>
+                  <SelectTrigger id="project" className="w-full">
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="monileappdev">
+                      Mobile App Development
+                    </SelectItem>
+                    <SelectItem value="webredesign">
+                      Website Redesign
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <DialogFooter>
               <Button
