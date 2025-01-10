@@ -14,6 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  signInSchema,
+  signUpSchema,
+  SignInSchemaType,
+  SignUpSchemaType,
+} from "@/lib/validations";
 
 type AuthFormProps = {
   currentPage: "sign-up" | "sign-in";
@@ -21,10 +28,27 @@ type AuthFormProps = {
 
 export const AuthForm = ({ currentPage }: AuthFormProps) => {
   const isSignInPage = currentPage === "sign-in";
-  const form = useForm();
 
-  const onSubmit = async () => {
-    console.log("submit");
+  const form = useForm<SignInSchemaType | SignUpSchemaType>({
+    resolver: zodResolver(isSignInPage ? signInSchema : signUpSchema),
+    defaultValues: isSignInPage
+      ? {
+          email: "",
+          password: "",
+        }
+      : {
+          username: "",
+          email: "",
+          password: "",
+        },
+  });
+
+  const onSubmit = async (data: SignInSchemaType | SignUpSchemaType) => {
+    if (isSignInPage) {
+      console.log(data);
+    } else {
+      console.log(data);
+    }
   };
 
   return (
