@@ -87,7 +87,9 @@ export const AuthForm = ({ currentPage }: AuthFormProps) => {
               </FormItem>
             )}
           />
-          <Button className="w-full">Sign In</Button>
+          <Button className="w-full">
+            {currentPage === "sign-in" ? "Sign In" : "Sign Up"}
+          </Button>
 
           <div className="flex items-center gap-1 text-sm">
             {isSignInPage ? (
