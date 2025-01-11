@@ -3,53 +3,28 @@
 import { GoogleSignInBtn } from "@/components/GoogleSignInBtn";
 import { H3 } from "@/components/H3";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  signInSchema,
-  signUpSchema,
-  SignInSchemaType,
-  SignUpSchemaType,
-} from "@/lib/validations";
+
+import { Label } from "@/components/ui/label";
+import { useActionState } from "react";
+import { signInAction, signUpAction } from "../actions";
+import { LoaderCircleIcon } from "lucide-react";
 
 type AuthFormProps = {
   currentPage: "sign-up" | "sign-in";
 };
 
 export const AuthForm = ({ currentPage }: AuthFormProps) => {
+  const [state, formAction, isPending] = useActionState(
+    currentPage === "sign-up" ? signUpAction : signInAction,
+    undefined
+  );
+
   const isSignInPage = currentPage === "sign-in";
 
-  const form = useForm<SignInSchemaType | SignUpSchemaType>({
-    resolver: zodResolver(isSignInPage ? signInSchema : signUpSchema),
-    defaultValues: isSignInPage
-      ? {
-          email: "",
-          password: "",
-        }
-      : {
-          username: "",
-          email: "",
-          password: "",
-        },
-  });
-
-  const onSubmit = async (data: SignInSchemaType | SignUpSchemaType) => {
-    if (isSignInPage) {
-      console.log(data);
-    } else {
-      console.log(data);
-    }
-  };
+  console.log(state);
 
   return (
     <div className="flex flex-col gap-10">
@@ -64,76 +39,66 @@ export const AuthForm = ({ currentPage }: AuthFormProps) => {
       </div>
 
       {/* FORM */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          {!isSignInPage && (
-            <FormField
-              control={form.control}
+      <form className="space-y-4" action={formAction}>
+        {!isSignInPage && (
+          <div>
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
               name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your username" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              placeholder="Enter your username"
             />
-          )}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="w-full">
-            {currentPage === "sign-in" ? "Sign In" : "Sign Up"}
-          </Button>
-
-          <div className="flex items-center gap-1 text-sm">
-            {isSignInPage ? (
-              <>
-                <p>Don&apos;t have an account?</p>
-                <Link href="/sign-up" className="text-primary hover:underline">
-                  Sign Up
-                </Link>
-              </>
-            ) : (
-              <>
-                <p>Already have an account?</p>
-                <Link href="/sign-in" className="text-primary hover:underline">
-                  Sign In
-                </Link>
-              </>
+            {state?.fieldErrors?.username && (
+              <p className="text-sm text-red-700">
+                {state.fieldErrors.username}
+              </p>
             )}
           </div>
-        </form>
-      </Form>
+        )}
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" placeholder="Enter your email" />
+          {state?.fieldErrors?.email && (
+            <p className="text-sm text-red-700">{state.fieldErrors.email}</p>
+          )}
+        </div>
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+          />
+          {state?.fieldErrors?.password && (
+            <p className="text-sm text-red-700">{state.fieldErrors.password}</p>
+          )}
+        </div>
+
+        <Button disabled={isPending} className="w-full">
+          {currentPage === "sign-in" ? "Sign In" : "Sign Up"}
+
+          {isPending && <LoaderCircleIcon className="animate-spin" />}
+        </Button>
+
+        <div className="flex items-center gap-1 text-sm">
+          {isSignInPage ? (
+            <>
+              <p>Don&apos;t have an account?</p>
+              <Link href="/sign-up" className="text-primary hover:underline">
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <p>Already have an account?</p>
+              <Link href="/sign-in" className="text-primary hover:underline">
+                Sign In
+              </Link>
+            </>
+          )}
+        </div>
+      </form>
 
       {/* DIVIDER */}
       <div className="relative w-full">

@@ -9,7 +9,7 @@ import { AuthError } from "next-auth";
 type previousState =
   | {
       fieldErrors?: {
-        name?: string[];
+        username?: string[];
         email?: string[];
         password?: string[];
       };
