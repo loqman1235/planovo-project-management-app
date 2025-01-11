@@ -101,6 +101,6 @@ export const githubSignInAction = async () => {
 
 export const googleSignInAction = async () => {
   await signIn("google", {
-    redirectTo: "/callback",
+    redirectTo: "/",
   });
 };

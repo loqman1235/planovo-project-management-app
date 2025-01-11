@@ -1,6 +1,5 @@
 "use client";
 
-import { GoogleSignInBtn } from "@/components/GoogleSignInBtn";
 import { H3 } from "@/components/H3";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useActionState } from "react";
 import { signInAction, signUpAction } from "../actions";
 import { LoaderCircleIcon } from "lucide-react";
+import { GoogleSignInBtn } from "./GoogleSignInBtn";
 
 type AuthFormProps = {
   currentPage: "sign-up" | "sign-in";
@@ -23,8 +23,6 @@ export const AuthForm = ({ currentPage }: AuthFormProps) => {
   );
 
   const isSignInPage = currentPage === "sign-in";
-
-  console.log(state);
 
   return (
     <div className="flex flex-col gap-10">
