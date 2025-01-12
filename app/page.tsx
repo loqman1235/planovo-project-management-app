@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { SignOutBtn } from "@/components/SignOutBtn";
 import { redirect } from "next/navigation";
 
 const Home = async () => {
@@ -10,6 +11,7 @@ const Home = async () => {
     <div>
       <h1>Homepage</h1>
       <div>Hello {session.user.name}</div>
+      <SignOutBtn />
     </div>
   );
 };

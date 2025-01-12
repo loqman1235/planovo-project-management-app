@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import prisma from "@/lib/prisma";
 import { signInSchema, signUpSchema } from "@/lib/validations";
 import bcrypt from "bcryptjs";
@@ -103,4 +103,8 @@ export const googleSignInAction = async () => {
   await signIn("google", {
     redirectTo: "/",
   });
+};
+
+export const signOutAction = async () => {
+  await signOut();
 };
