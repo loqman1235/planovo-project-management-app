@@ -11,7 +11,6 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { SidebarLink } from "./SidebarLink";
-import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Prisma } from "@prisma/client";
+import { SidebarProjectLink } from "./SidebarProjectLink";
 
 type WorkspaceWithProjects = Prisma.WorkspaceGetPayload<{
   include: { projects: true };
@@ -176,28 +176,19 @@ export const Sidebar = ({ workspace }: SidebarProps) => {
         </div>
 
         <ul className="flex flex-col gap-5">
-          <li>
-            <Link
-              className="flex items-center gap-2 hover:text-text-primary transition text-text-secondary"
-              href="/workspaces/1/projects/1"
-            >
-              <div className="w-5 h-5 rounded-[4px] flex items-center justify-center bg-primary-gradient text-xs text-text-primary">
-                M
-              </div>
-              <span className="text-sm">Mobile App Development</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="flex items-center gap-2 hover:text-text-primary transition text-text-secondary"
-              href="/workspaces/1/projects/1"
-            >
-              <div className="w-5 h-5 rounded-[4px] flex items-center justify-center bg-primary-gradient text-xs text-text-primary">
-                W
-              </div>
-              <span className="text-sm">Website Redesign</span>
-            </Link>
-          </li>
+          {workspace.projects.length > 0 ? (
+            workspace.projects.map((project) => (
+              <SidebarProjectLink
+                key={project.id}
+                workspaceId={workspace.id}
+                project={project}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-text-tertiary">
+              You don&apos;t have any projects yet
+            </p>
+          )}
         </ul>
       </div>
     </aside>
