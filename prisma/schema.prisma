@@ -94,9 +94,10 @@ model Column {
 }
 
 model Task {
-  id        String   @id @default(cuid())
-  title     String
-  status    String?
+  id     String  @id @default(cuid())
+  title  String
+  status String?
+
   columnId  String
   column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
