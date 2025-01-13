@@ -24,23 +24,32 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Prisma } from "@prisma/client";
 
-export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
+type WorkspaceWithProjects = Prisma.WorkspaceGetPayload<{
+  include: { projects: true };
+}>;
+
+type SidebarProps = {
+  workspace: WorkspaceWithProjects;
+};
+
+export const Sidebar = ({ workspace }: SidebarProps) => {
   const sidebarLinks = [
-    { text: "home", href: `/workspaces/${workspaceId}`, icon: HomeIcon },
+    { text: "home", href: `/workspaces/${workspace.id}`, icon: HomeIcon },
     {
       text: "my tasks",
-      href: `/workspaces/${workspaceId}/tasks`,
+      href: `/workspaces/${workspace.id}/tasks`,
       icon: CircleCheckIcon,
     },
     {
       text: "members",
-      href: `/workspaces/${workspaceId}/members`,
+      href: `/workspaces/${workspace.id}/members`,
       icon: UsersIcon,
     },
     {
       text: "settings",
-      href: `/workspaces/${workspaceId}/settings`,
+      href: `/workspaces/${workspace.id}/settings`,
       icon: SettingsIcon,
     },
   ];
@@ -99,9 +108,9 @@ export const Sidebar = ({ workspaceId }: { workspaceId: string }) => {
         <button className="w-full p-1.5 rounded-md border border-border-light bg-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
-              AC
+              {workspace.name[0]}
             </div>
-            <p className="text-sm">Acme Corp</p>
+            <p className="text-sm">{workspace.name}</p>
           </div>
 
           <ChevronsUpDown className="size-4" />
