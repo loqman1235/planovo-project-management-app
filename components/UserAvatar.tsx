@@ -1,10 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export const UserAvatar = () => {
+type UserAvatarProps = {
+  username: string;
+  image?: string;
+};
+
+export const UserAvatar = ({ username, image }: UserAvatarProps) => {
   return (
     <Avatar>
-      <AvatarImage src="https://github.com/shadcn.png" alt="avatar" />
-      <AvatarFallback>JD</AvatarFallback>
+      <AvatarImage src={image} alt="avatar" />
+      <AvatarFallback>{username[0]}</AvatarFallback>
     </Avatar>
   );
 };

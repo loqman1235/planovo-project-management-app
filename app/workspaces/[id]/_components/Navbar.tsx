@@ -1,8 +1,13 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { SearchForm } from "./SearchForm";
 import { BellIcon } from "lucide-react";
+import { auth } from "@/auth";
 
-export const Navbar = () => {
+export const Navbar = async () => {
+  const session = await auth();
+
+  if (!session?.user) return null;
+
   return (
     <header className="w-full flex items-center justify-between mb-5">
       <SearchForm />
@@ -15,7 +20,10 @@ export const Navbar = () => {
           </button>
         </li>
         <li>
-          <UserAvatar />
+          <UserAvatar
+            image={session.user.image || ""}
+            username={session.user?.username || ""}
+          />
         </li>
       </ul>
     </header>

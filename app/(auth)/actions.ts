@@ -4,6 +4,7 @@ import { signIn, signOut } from "@/auth";
 import prisma from "@/lib/prisma";
 import {
   signInSchema,
+  SignInSchemaType,
   signUpSchema,
   SignUpSchemaType,
 } from "@/lib/validations";
@@ -55,18 +56,14 @@ export const signUpAction = async (
     };
   } catch (error) {
     console.error(error);
-    return {
-      success: false,
-      message: "Something went wrong",
-    };
   }
 };
 
 export const signInAction = async (
   previousState: unknown,
-  formData: FormData
+  data: SignInSchemaType
 ) => {
-  const parsedFields = signInSchema.safeParse(Object.fromEntries(formData));
+  const parsedFields = signInSchema.safeParse(data);
 
   if (!parsedFields.success) {
     return {
@@ -80,7 +77,7 @@ export const signInAction = async (
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/callback",
+      redirectTo: "/",
     });
   } catch (error) {
     if (error instanceof AuthError) {

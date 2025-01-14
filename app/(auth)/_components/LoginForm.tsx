@@ -18,13 +18,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import { useActionState } from "react";
+import { signInAction } from "../actions";
+import { startTransition, useActionState } from "react";
 
 export const LoginForm = () => {
-  //   const [state, formAction, isPending] = useActionState(
-  //     signUpAction,
-  //     undefined
-  //   );
+  const [state, formAction, isPending] = useActionState(
+    signInAction,
+    undefined
+  );
 
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
@@ -35,7 +36,7 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (data: SignInSchemaType) => {
-    console.log(data);
+    startTransition(() => formAction(data));
   };
 
   return (
@@ -84,9 +85,21 @@ export const LoginForm = () => {
             )}
           />
 
-          <Button disabled={false} className="w-full">
-            Sign Up
-            {false && <LoaderCircleIcon className="animate-spin" />}
+          {state?.fieldErrors.email && (
+            <p className="text-sm text-destructive">
+              {state.fieldErrors.email}
+            </p>
+          )}
+          {state?.fieldErrors.password && (
+            <p className="text-sm text-destructive">
+              {" "}
+              {state.fieldErrors.password}
+            </p>
+          )}
+
+          <Button disabled={isPending} className="w-full">
+            Sign In
+            {isPending && <LoaderCircleIcon className="animate-spin" />}
           </Button>
 
           <div className="flex items-center gap-1 text-sm">
