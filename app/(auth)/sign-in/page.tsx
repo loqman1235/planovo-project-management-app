@@ -1,6 +1,6 @@
-import { AuthForm } from "../_components/AuthForm";
+import { LoginForm } from "../_components/LoginForm";
 
 const SignInPage = () => {
-  return <AuthForm currentPage="sign-in" />;
+  return <LoginForm />;
 };
 export default SignInPage;

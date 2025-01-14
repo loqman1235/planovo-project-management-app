@@ -22,7 +22,6 @@ export default async function RootLayout({
   const headerList = await headers();
   const currentPath = headerList.get("x-current-path");
 
-  console.log(headerList);
   if (session?.user && session.user.id) {
     if (currentPath === "/" || currentPath === "/callback") {
       const defaultWorkspace = await getDefaultWorkspace(session.user.id);

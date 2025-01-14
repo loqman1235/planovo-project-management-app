@@ -1,6 +1,6 @@
-import { AuthForm } from "../_components/AuthForm";
+import { RegisterForm } from "../_components/RegisterForm";
 
 const SignUpPage = () => {
-  return <AuthForm currentPage="sign-up" />;
+  return <RegisterForm />;
 };
 export default SignUpPage;
