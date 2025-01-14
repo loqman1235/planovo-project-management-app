@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   headers.set("x-current-path", request.nextUrl.pathname);
 
-  return NextResponse.next({ headers });
+  return NextResponse.next({ request: { headers } });
 }
 
 export const config = {

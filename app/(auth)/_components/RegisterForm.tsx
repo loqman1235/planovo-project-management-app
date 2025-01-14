@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition, useActionState, useEffect } from "react";
 import { H3 } from "@/components/H3";
 import { Button } from "@/components/ui/button";
 
@@ -7,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 import { LoaderCircleIcon } from "lucide-react";
-import { GoogleSignInBtn } from "./GoogleSignInBtn";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, SignUpSchemaType } from "@/lib/validations";
@@ -19,8 +19,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useActionState } from "react";
 import { signUpAction } from "../actions";
+import { useRouter } from "next/navigation";
 
 export const RegisterForm = () => {
   const [state, formAction, isPending] = useActionState(
@@ -37,9 +37,18 @@ export const RegisterForm = () => {
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: SignUpSchemaType) => {
-    console.log(data);
+    startTransition(() => formAction(data));
   };
+
+  useEffect(() => {
+    if (state?.success) {
+      form.reset();
+      router.push("/sign-in");
+    }
+  }, [form, router, state]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -101,9 +110,9 @@ export const RegisterForm = () => {
             )}
           />
 
-          <Button disabled={false} className="w-full">
+          <Button disabled={isPending} className="w-full">
             Sign Up
-            {false && <LoaderCircleIcon className="animate-spin" />}
+            {isPending && <LoaderCircleIcon className="animate-spin" />}
           </Button>
 
           <div className="flex items-center gap-1 text-sm">

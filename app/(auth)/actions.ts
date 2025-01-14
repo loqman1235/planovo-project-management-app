@@ -2,25 +2,19 @@
 
 import { signIn, signOut } from "@/auth";
 import prisma from "@/lib/prisma";
-import { signInSchema, signUpSchema } from "@/lib/validations";
+import {
+  signInSchema,
+  signUpSchema,
+  SignUpSchemaType,
+} from "@/lib/validations";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 
-type previousState =
-  | {
-      fieldErrors?: {
-        username?: string[];
-        email?: string[];
-        password?: string[];
-      };
-    }
-  | undefined;
-
 export const signUpAction = async (
-  previousState: previousState,
-  formData: FormData
-): Promise<previousState> => {
-  const parsedFields = signUpSchema.safeParse(Object.fromEntries(formData));
+  previousState: unknown,
+  data: SignUpSchemaType
+) => {
+  const parsedFields = signUpSchema.safeParse(data);
 
   if (!parsedFields.success) {
     return {
@@ -54,8 +48,17 @@ export const signUpAction = async (
         password: hashedPassword,
       },
     });
+
+    return {
+      success: true,
+      message: "Account created successfully",
+    };
   } catch (error) {
     console.error(error);
+    return {
+      success: false,
+      message: "Something went wrong",
+    };
   }
 };
 
