@@ -6,13 +6,32 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 declare module "next-auth" {
+  interface User {
+    username: string;
+  }
+
   interface Session {
     user: {
-      id?: string;
-      username?: string;
-      email?: string;
+      id: string;
+      email: string;
+      username: string;
       image?: string;
     };
+  }
+
+  interface JWT {
+    id: string;
+    username: string;
+    email: string;
+    picture?: string;
+  }
+}
+declare module "@auth/core/adapters" {
+  interface AdapterUser {
+    id: string;
+    email: string;
+    username: string;
+    image?: string;
   }
 }
 
@@ -57,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!account) return false;
       if (!user) return false;
 
-      if (account.provider === "google") {
+      if (account.provider === "google" || account.provider === "credentials") {
         if (user.id !== undefined) {
           try {
             const existingWorkspace = await prisma.workspace.findFirst({
@@ -96,5 +115,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return true;
     },
+
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.username = token.username as string;
+        session.user.image = token.picture as string | undefined;
+      }
+
+      return session;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.username = user.username;
+      }
+
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
 });

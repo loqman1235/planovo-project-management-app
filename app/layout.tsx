@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { getDefaultWorkspace } from "@/lib/workspace";
 import { Toaster } from "@/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,26 +20,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-  const headerList = await headers();
-  const currentPath = headerList.get("x-current-path");
-
-  if (session?.user && session.user.id) {
-    if (currentPath === "/" || currentPath === "/callback") {
-      const defaultWorkspace = await getDefaultWorkspace(session.user.id);
-
-      if (defaultWorkspace) {
-        redirect(`/workspaces/${defaultWorkspace.id}`);
-      }
-    }
-  }
-
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang="en">
+        <body className={`${inter.className} antialiased`}>
+          {children}
+
+          <Toaster />
+        </body>
+      </html>
+    </SessionProvider>
   );
 }

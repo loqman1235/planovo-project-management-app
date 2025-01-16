@@ -8,9 +8,9 @@ type AutLayoutProps = {
 };
 
 const AutLayout = async ({ children }: AutLayoutProps) => {
-  const session = await auth();
+  // const session = await auth();
 
-  if (session && session.user) redirect("/");
+  // if (session && session.user) redirect("/");
 
   return (
     <div className="w-full min-h-screen flex flex-col gap-5 items-center justify-center p-5">
