@@ -1,7 +1,5 @@
-import { auth } from "@/auth";
 import { Brand } from "@/components/Brand";
-import { redirect } from "next/navigation";
-import { GoogleSignInBtn } from "./_components/GoogleSignInBtn";
+import { GithubSignInBtn } from "./_components/GithubSignInBtn";
 
 type AutLayoutProps = {
   children: React.ReactNode;
@@ -27,7 +25,7 @@ const AutLayout = async ({ children }: AutLayoutProps) => {
             </span>
             <div className="w-full border border-border" />
           </div>
-          <GoogleSignInBtn />
+          <GithubSignInBtn />
         </div>
 
         <div className="absolute top-full right-0 translate-x-1/2 -translate-y-1/2 bg-primary w-[100px] h-[100px] rounded-full blur-[180px] -z-10"></div>

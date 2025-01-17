@@ -1,7 +1,13 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { SearchForm } from "./SearchForm";
-import { BellIcon } from "lucide-react";
-import { auth } from "@/auth";
+import { BellIcon, LogOutIcon, UserCircle } from "lucide-react";
+import { auth, signOut } from "@/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = async () => {
   const session = await auth();
@@ -20,10 +26,31 @@ export const Navbar = async () => {
           </button>
         </li>
         <li>
-          <UserAvatar
-            image={session.user.image || ""}
-            username={session.user?.username || ""}
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <UserAvatar
+                image={session.user.image || ""}
+                username={session.user?.username || ""}
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-[200px]" align="end">
+              <DropdownMenuItem>
+                <UserCircle className="size-4 mr-1" /> Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut({ redirectTo: "/sign-in" });
+                  }}
+                >
+                  <button className="flex items-center">
+                    <LogOutIcon className="size-4 mr-1" /> Sign out
+                  </button>
+                </form>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </li>
       </ul>
     </header>

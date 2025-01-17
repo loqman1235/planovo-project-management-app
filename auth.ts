@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Github from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "./lib/prisma";
 import Credentials from "next-auth/providers/credentials";
@@ -38,6 +39,7 @@ declare module "@auth/core/adapters" {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google,
+    Github,
     Credentials({
       name: "Credentials",
       credentials: {
@@ -66,52 +68,65 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          username: user.username || "",
+          name: user.name || null,
+          image: user.image || null,
+        };
       },
     }),
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async signIn({ user, account }) {
+      console.log("user", user);
+      console.log("account", account);
+
       if (!account) return false;
       if (!user) return false;
 
-      if (account.provider === "google" || account.provider === "credentials") {
-        if (user.id !== undefined) {
-          try {
-            const existingWorkspace = await prisma.workspace.findFirst({
-              where: {
-                ownerId: user.id,
-              },
-            });
+      // if (
+      //   account.provider === "google" ||
+      //   account.provider === "credentials" ||
+      //   account.provider === "github"
+      // ) {
+      //   if (user.id !== undefined) {
+      //     try {
+      //       const existingWorkspace = await prisma.workspace.findFirst({
+      //         where: {
+      //           ownerId: user.id,
+      //         },
+      //       });
 
-            if (!existingWorkspace) {
-              await prisma.workspace.create({
-                data: {
-                  ownerId: user.id,
-                  name: "New workspace",
-                  projects: {
-                    create: {
-                      name: "First project",
-                      description: "Welcome to your first project!",
-                      columns: {
-                        create: [
-                          { name: "Backlog", type: "BACKLOG" },
-                          { name: "To do", type: "TODO" },
-                          { name: "In progress", type: "IN_PROGRESS" },
-                          { name: "Done", type: "DONE" },
-                        ],
-                      },
-                    },
-                  },
-                },
-              });
-            }
-          } catch (error) {
-            console.error("Error creating workspace for Google user:", error);
-          }
-        }
-      }
+      //       if (!existingWorkspace) {
+      //         await prisma.workspace.create({
+      //           data: {
+      //             ownerId: user.id,
+      //             name: "New workspace",
+      //             projects: {
+      //               create: {
+      //                 name: "First project",
+      //                 description: "Welcome to your first project!",
+      //                 columns: {
+      //                   create: [
+      //                     { name: "Backlog", type: "BACKLOG" },
+      //                     { name: "To do", type: "TODO" },
+      //                     { name: "In progress", type: "IN_PROGRESS" },
+      //                     { name: "Done", type: "DONE" },
+      //                   ],
+      //                 },
+      //               },
+      //             },
+      //           },
+      //         });
+      //       }
+      //     } catch (error) {
+      //       console.error("Error creating workspace for Google user:", error);
+      //     }
+      //   }
+      // }
 
       return true;
     },
