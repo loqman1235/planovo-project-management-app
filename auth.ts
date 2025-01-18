@@ -81,9 +81,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async signIn({ user, account }) {
-      console.log("user", user);
-      console.log("account", account);
-
       if (!account) return false;
       if (!user) return false;
 
