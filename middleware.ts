@@ -10,14 +10,21 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users to their workspace
   if (session?.user) {
+    const defaultWorkspace = await getDefaultWorkspace(session.user.id);
+
+    // Prevent access to /onboard if user has a workspace
+    if (currentPath === "/onboard" && defaultWorkspace) {
+      return NextResponse.redirect(
+        `${request.nextUrl.origin}/workspaces/${defaultWorkspace.id}`
+      );
+    }
+
     // Skip redirect if already on a private route
     const isOnPrivateRoute = PRIVATE_ROUTES.some((route) =>
       currentPath.startsWith(route)
     );
 
     if (!isOnPrivateRoute) {
-      const defaultWorkspace = await getDefaultWorkspace(session.user.id);
-
       if (defaultWorkspace) {
         return NextResponse.redirect(
           `${request.nextUrl.origin}/workspaces/${defaultWorkspace.id}`
