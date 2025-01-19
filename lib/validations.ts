@@ -18,3 +18,12 @@ export const signUpSchema = z.object({
 });
 
 export type SignUpSchemaType = z.infer<typeof signUpSchema>;
+
+export const createWorkspaceSchema = z.object({
+  workspaceName: z
+    .string()
+    .trim()
+    .min(1, { message: "Workspace name is required" }),
+});
+
+export type CreateWorkspaceSchemaType = z.infer<typeof createWorkspaceSchema>;

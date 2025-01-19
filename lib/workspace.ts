@@ -8,5 +8,8 @@ export async function getDefaultWorkspace(userId: string) {
     select: {
       id: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }

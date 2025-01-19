@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "./auth";
-import { createInitialWorkspace } from "./actions/workspaceActions";
+// import { createInitialWorkspace } from "./actions/workspaceActions";
 import { PUBLIC_ROUTES, PRIVATE_ROUTES, ROOT } from "./lib/routes";
+import { getDefaultWorkspace } from "./lib/workspace";
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
@@ -15,12 +16,15 @@ export async function middleware(request: NextRequest) {
     );
 
     if (!isOnPrivateRoute) {
-      const workspace = await createInitialWorkspace(session.user.id);
+      const defaultWorkspace = await getDefaultWorkspace(session.user.id);
 
-      if (workspace) {
+      if (defaultWorkspace) {
         return NextResponse.redirect(
-          `${request.nextUrl.origin}/workspaces/${workspace.id}`
+          `${request.nextUrl.origin}/workspaces/${defaultWorkspace.id}`
         );
+      } else {
+        // redirect to /onboard
+        return NextResponse.redirect(`${request.nextUrl.origin}/onboard`);
       }
     }
   } else {
