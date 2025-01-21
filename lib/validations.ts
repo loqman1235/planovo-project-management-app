@@ -29,6 +29,10 @@ export const createWorkspaceSchema = z.object({
 export type CreateWorkspaceSchemaType = z.infer<typeof createWorkspaceSchema>;
 
 export const editWorkspaceSchema = z.object({
+  workspaceId: z
+    .string()
+    .trim()
+    .min(1, { message: "Workspace id is required" }),
   workspaceName: z
     .string()
     .trim()

@@ -5,6 +5,8 @@ import prisma from "@/lib/prisma";
 import {
   createWorkspaceSchema,
   CreateWorkspaceSchemaType,
+  editWorkspaceSchema,
+  EditWorkspaceSchemaType,
 } from "@/lib/validations";
 
 export async function getCurrentUser() {
@@ -48,5 +50,47 @@ export const createWorkspaceAction = async (
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const updateWorkspaceAction = async (
+  prevState: unknown,
+  data: EditWorkspaceSchemaType
+) => {
+  try {
+    const session = await auth();
+
+    if (!session?.user) {
+      throw Error("Unauthorized");
+    }
+
+    const validatedData = editWorkspaceSchema.safeParse(data);
+
+    if (!validatedData.success) {
+      return {
+        fieldErrors: validatedData.error.flatten().fieldErrors,
+      };
+    }
+
+    const { workspaceName, workspaceId } = validatedData.data;
+
+    const updatedWorkspace = await prisma.workspace.update({
+      where: {
+        id: workspaceId,
+      },
+      data: {
+        name: workspaceName,
+      },
+    });
+
+    if (updatedWorkspace) {
+      return {
+        success: true,
+        updatedWorkspace,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { updateWorkspaceAction } from "@/app/workspaces/actions";
 import { Divider } from "@/components/Divider";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import {
 } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadIcon } from "lucide-react";
+import { useActionState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 type Props = {
@@ -24,17 +26,24 @@ type Props = {
   workspaceName: string;
 };
 
-export const WorkspaceDetailsForm = ({ workspaceName }: Props) => {
+export const WorkspaceDetailsForm = ({ workspaceId, workspaceName }: Props) => {
+  const [state, formAction] = useActionState(updateWorkspaceAction, undefined);
+
   const form = useForm<EditWorkspaceSchemaType>({
     resolver: zodResolver(editWorkspaceSchema),
     defaultValues: {
+      workspaceId,
       workspaceName,
     },
   });
 
+  const [isPending, startTransition] = useTransition();
+
   const onSubmit = async (data: EditWorkspaceSchemaType) => {
-    console.log(data);
+    startTransition(() => formAction(data));
   };
+
+  console.log(state);
 
   return (
     <Form {...form}>
@@ -82,7 +91,7 @@ export const WorkspaceDetailsForm = ({ workspaceName }: Props) => {
         </div>
 
         <Divider />
-        <Button>Save</Button>
+        <Button disabled={isPending}>{isPending ? "Saving..." : "Save"}</Button>
       </form>
     </Form>
   );
