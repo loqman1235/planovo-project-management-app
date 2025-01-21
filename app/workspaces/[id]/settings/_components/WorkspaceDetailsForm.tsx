@@ -11,14 +11,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  editWorkspaceSchema,
+  EditWorkspaceSchemaType,
+} from "@/lib/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-export const WorkspaceDetailsForm = () => {
-  const form = useForm();
+type Props = {
+  workspaceId: string;
+  workspaceName: string;
+};
 
-  const onSubmit = async () => {
-    console.log("submit");
+export const WorkspaceDetailsForm = ({ workspaceName }: Props) => {
+  const form = useForm<EditWorkspaceSchemaType>({
+    resolver: zodResolver(editWorkspaceSchema),
+    defaultValues: {
+      workspaceName,
+    },
+  });
+
+  const onSubmit = async (data: EditWorkspaceSchemaType) => {
+    console.log(data);
   };
 
   return (
@@ -26,7 +41,7 @@ export const WorkspaceDetailsForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
-          name="username"
+          name="workspaceName"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-text-primary">

@@ -1,8 +1,13 @@
 import { H4 } from "@/components/H4";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { WorkspaceDetailsForm } from "./WorkspaceDetailsForm";
+import { Workspace } from "@prisma/client";
 
-export const WorkspaceDetailsCard = () => {
+type Props = {
+  workspace: Workspace;
+};
+
+export const WorkspaceDetailsCard = async ({ workspace }: Props) => {
   return (
     <Card>
       <CardHeader className="gap-1">
@@ -12,7 +17,10 @@ export const WorkspaceDetailsCard = () => {
         </span>
       </CardHeader>
       <CardContent>
-        <WorkspaceDetailsForm />
+        <WorkspaceDetailsForm
+          workspaceId={workspace.id}
+          workspaceName={workspace.name}
+        />
       </CardContent>
     </Card>
   );

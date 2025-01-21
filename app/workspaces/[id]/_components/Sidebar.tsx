@@ -31,25 +31,29 @@ type WorkspaceWithProjects = Prisma.WorkspaceGetPayload<{
 }>;
 
 type SidebarProps = {
-  workspace: WorkspaceWithProjects;
+  currentWorkspace: WorkspaceWithProjects;
 };
 
-export const Sidebar = ({ workspace }: SidebarProps) => {
+export const Sidebar = ({ currentWorkspace }: SidebarProps) => {
   const sidebarLinks = [
-    { text: "home", href: `/workspaces/${workspace.id}`, icon: HomeIcon },
+    {
+      text: "home",
+      href: `/workspaces/${currentWorkspace.id}`,
+      icon: HomeIcon,
+    },
     {
       text: "my tasks",
-      href: `/workspaces/${workspace.id}/tasks`,
+      href: `/workspaces/${currentWorkspace.id}/tasks`,
       icon: CircleCheckIcon,
     },
     {
       text: "members",
-      href: `/workspaces/${workspace.id}/members`,
+      href: `/workspaces/${currentWorkspace.id}/members`,
       icon: UsersIcon,
     },
     {
       text: "settings",
-      href: `/workspaces/${workspace.id}/settings`,
+      href: `/workspaces/${currentWorkspace.id}/settings`,
       icon: SettingsIcon,
     },
   ];
@@ -108,9 +112,9 @@ export const Sidebar = ({ workspace }: SidebarProps) => {
         <button className="w-full p-1.5 rounded-md border border-border-light bg-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
-              {workspace.name[0]}
+              {currentWorkspace.name[0]}
             </div>
-            <p className="text-sm">{workspace.name}</p>
+            <p className="text-sm">{currentWorkspace.name}</p>
           </div>
 
           <ChevronsUpDown className="size-4" />
@@ -176,11 +180,11 @@ export const Sidebar = ({ workspace }: SidebarProps) => {
         </div>
 
         <ul className="flex flex-col gap-5">
-          {workspace.projects.length > 0 ? (
-            workspace.projects.map((project) => (
+          {currentWorkspace.projects.length > 0 ? (
+            currentWorkspace.projects.map((project) => (
               <SidebarProjectLink
                 key={project.id}
-                workspaceId={workspace.id}
+                workspaceId={currentWorkspace.id}
                 project={project}
               />
             ))

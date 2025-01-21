@@ -18,15 +18,13 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
     },
   });
 
-  console.log(workspace);
-
   if (!workspace) {
     return <div>Workspace not found </div>;
   }
 
   return (
     <div className="space-y-5">
-      <WorkspaceDetailsCard />
+      <WorkspaceDetailsCard workspace={workspace} />
       <InviteMembersCard />
       <DangerZoneCard />
     </div>
