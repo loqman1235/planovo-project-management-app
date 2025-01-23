@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { getDefaultWorkspace } from "@/lib/workspace";
 import { Toaster } from "@/components/ui/sonner";
 import { SessionProvider } from "next-auth/react";
 
