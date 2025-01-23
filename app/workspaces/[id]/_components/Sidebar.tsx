@@ -138,7 +138,7 @@ export const Sidebar = ({ currentWorkspace, userWorkspaces }: SidebarProps) => {
                   return (
                     <button
                       key={workspace.id}
-                      className="w-full p-1.5 flex items-center justify-between"
+                      className="w-full p-1.5 flex items-center justify-between hover:bg-card rounded-md"
                     >
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
@@ -147,14 +147,6 @@ export const Sidebar = ({ currentWorkspace, userWorkspaces }: SidebarProps) => {
                         <p className="text-sm">{workspace.name}</p>
                       </div>
                     </button>
-                  );
-                } else {
-                  return (
-                    <div key={workspace.id} className="w-full p-1.5">
-                      <p className="text-sm text-text-secondary">
-                        No workspaces
-                      </p>
-                    </div>
                   );
                 }
               })}
