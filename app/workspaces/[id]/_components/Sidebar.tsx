@@ -23,12 +23,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Prisma } from "@prisma/client";
 import { SidebarProjectLink } from "./SidebarProjectLink";
-
-type WorkspaceWithProjects = Prisma.WorkspaceGetPayload<{
-  include: { projects: true };
-}>;
+import { WorkspaceWithProjects } from "@/types";
 
 type SidebarProps = {
   currentWorkspace: WorkspaceWithProjects;

@@ -8,6 +8,7 @@ import {
   editWorkspaceSchema,
   EditWorkspaceSchemaType,
 } from "@/lib/validations";
+import { revalidatePath } from "next/cache";
 
 export async function getCurrentUser() {
   const session = await auth();
@@ -83,12 +84,47 @@ export const updateWorkspaceAction = async (
       },
     });
 
+    revalidatePath(`/workspaces/${workspaceId}`);
+
     if (updatedWorkspace) {
       return {
         success: true,
         updatedWorkspace,
       };
     }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getWorkspaces = async () => {
+  try {
+    const session = await auth();
+
+    if (!session || !session.user) {
+      throw Error("Unauthorized");
+    }
+
+    const workspaces = await prisma.workspace.findMany({
+      where: {
+        ownerId: session.user.id,
+      },
+      include: {
+        projects: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    if (workspaces.length === 0) {
+      return {
+        error: "No workspaces found",
+      };
+    }
+
+    return workspaces;
   } catch (error) {
     console.log(error);
     throw error;

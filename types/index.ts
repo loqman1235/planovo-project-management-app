@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export interface Task {
   id: string;
   title: string;
@@ -16,3 +18,7 @@ export enum ColumnType {
   inProgress = "inProgress",
   done = "done",
 }
+
+export type WorkspaceWithProjects = Prisma.WorkspaceGetPayload<{
+  include: { projects: true };
+}>;

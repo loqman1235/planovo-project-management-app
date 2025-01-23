@@ -18,8 +18,9 @@ import {
 } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadIcon } from "lucide-react";
-import { useActionState, useTransition } from "react";
+import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type Props = {
   workspaceId: string;
@@ -43,7 +44,9 @@ export const WorkspaceDetailsForm = ({ workspaceId, workspaceName }: Props) => {
     startTransition(() => formAction(data));
   };
 
-  console.log(state);
+  useEffect(() => {
+    if (!isPending && state?.success) toast.success("Workspace updated");
+  }, [isPending, state?.success]);
 
   return (
     <Form {...form}>
