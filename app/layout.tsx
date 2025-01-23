@@ -26,7 +26,15 @@ export default async function RootLayout({
         <body className={`${inter.className} antialiased`}>
           {children}
 
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              // unstyled: true,
+              classNames: {
+                success: "bg-emerald-100 text-emerald-700",
+                error: "bg-destructive-100 text-destructive-700",
+              },
+            }}
+          />
         </body>
       </html>
     </SessionProvider>
