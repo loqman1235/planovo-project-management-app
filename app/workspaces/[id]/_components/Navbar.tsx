@@ -33,7 +33,11 @@ export const Navbar = async () => {
                 username={session.user?.username || ""}
               />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-[200px]" align="end">
+            <DropdownMenuContent
+              className="min-w-[200px]"
+              align="end"
+              sideOffset={5}
+            >
               <DropdownMenuItem>
                 <UserCircle className="size-4 mr-1" /> Profile
               </DropdownMenuItem>

@@ -31,9 +31,18 @@ const WorkspaceLayout = async ({ children, params }: WorkspacesLayoutProps) => {
     return <div>Workspace not found</div>;
   }
 
+  const userWorkspaces = await prisma.workspace.findMany({
+    where: {
+      ownerId: session.user.id,
+    },
+  });
+
   return (
     <main className="w-full h-screen flex">
-      <Sidebar currentWorkspace={currentWorkspace} />
+      <Sidebar
+        currentWorkspace={currentWorkspace}
+        userWorkspaces={userWorkspaces}
+      />
       <div className="flex-grow bg-foreground p-5 min-h-screen overflow-y-auto">
         <Navbar />
         {children}

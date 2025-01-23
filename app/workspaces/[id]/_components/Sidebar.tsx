@@ -25,12 +25,19 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { SidebarProjectLink } from "./SidebarProjectLink";
 import { WorkspaceWithProjects } from "@/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Workspace } from "@prisma/client";
 
 type SidebarProps = {
   currentWorkspace: WorkspaceWithProjects;
+  userWorkspaces: Workspace[];
 };
 
-export const Sidebar = ({ currentWorkspace }: SidebarProps) => {
+export const Sidebar = ({ currentWorkspace, userWorkspaces }: SidebarProps) => {
   const sidebarLinks = [
     {
       text: "home",
@@ -105,16 +112,54 @@ export const Sidebar = ({ currentWorkspace }: SidebarProps) => {
           </Dialog>
         </div>
 
-        <button className="w-full p-1.5 rounded-md border border-border-light bg-foreground flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
-              {currentWorkspace.name[0]}
-            </div>
-            <p className="text-sm">{currentWorkspace.name}</p>
-          </div>
+        {/* WORKSPACES DROPDOWN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-full p-1.5 rounded-md border border-border-light bg-foreground flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
+                  {currentWorkspace.name[0]}
+                </div>
+                <p className="text-sm">{currentWorkspace.name}</p>
+              </div>
 
-          <ChevronsUpDown className="size-4" />
-        </button>
+              <ChevronsUpDown className="size-4" />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            className="dropdown-content-width-full border border-border-light bg-foreground"
+            align="end"
+            sideOffset={5}
+          >
+            {userWorkspaces.length > 0 &&
+              userWorkspaces.map((workspace) => {
+                if (workspace.id !== currentWorkspace.id) {
+                  return (
+                    <button
+                      key={workspace.id}
+                      className="w-full p-1.5 flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-[6px] bg-[#EC4899] flex items-center justify-center text-xs font-medium">
+                          {workspace.name[0]}
+                        </div>
+                        <p className="text-sm">{workspace.name}</p>
+                      </div>
+                    </button>
+                  );
+                } else {
+                  return (
+                    <div key={workspace.id} className="w-full p-1.5">
+                      <p className="text-sm text-text-secondary">
+                        No workspaces
+                      </p>
+                    </div>
+                  );
+                }
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* MENU SECTION */}
