@@ -186,7 +186,7 @@ export const Sidebar = ({ currentWorkspace }: SidebarProps) => {
             ))
           ) : (
             <p className="text-sm text-text-tertiary">
-              You don&apos;t have any projects yet
+              Create Your First Project
             </p>
           )}
         </ul>
