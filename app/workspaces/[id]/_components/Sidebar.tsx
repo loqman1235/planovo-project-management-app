@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Workspace } from "@prisma/client";
+import Link from "next/link";
 
 type SidebarProps = {
   currentWorkspace: WorkspaceWithProjects;
@@ -136,8 +137,9 @@ export const Sidebar = ({ currentWorkspace, userWorkspaces }: SidebarProps) => {
               userWorkspaces.map((workspace) => {
                 if (workspace.id !== currentWorkspace.id) {
                   return (
-                    <button
+                    <Link
                       key={workspace.id}
+                      href={`/workspaces/${workspace.id}`}
                       className="w-full p-1.5 flex items-center justify-between hover:bg-card rounded-md"
                     >
                       <div className="flex items-center gap-2">
@@ -146,7 +148,7 @@ export const Sidebar = ({ currentWorkspace, userWorkspaces }: SidebarProps) => {
                         </div>
                         <p className="text-sm">{workspace.name}</p>
                       </div>
-                    </button>
+                    </Link>
                   );
                 }
               })}
