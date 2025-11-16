@@ -35,7 +35,6 @@ declare module "@auth/core/adapters" {
     image?: string;
   }
 }
-
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google,
@@ -52,79 +51,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
 
-        if (
-          !user ||
-          !(await bcrypt.compare(
-            credentials.password as string,
-            user.password as string
-          ))
-        ) {
+          if (
+            !user ||
+            !user.password ||
+            !(await bcrypt.compare(
+              credentials.password as string,
+              user.password
+            ))
+          ) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            username: user.username || "",
+            name: user.name || null,
+            image: user.image || null,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
           return null;
         }
-
-        return {
-          id: user.id,
-          email: user.email,
-          username: user.username || "",
-          name: user.name || null,
-          image: user.image || null,
-        };
       },
     }),
   ],
   adapter: PrismaAdapter(prisma),
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
   callbacks: {
     async signIn({ user, account }) {
-      if (!account) return false;
-      if (!user) return false;
-
-      // if (
-      //   account.provider === "google" ||
-      //   account.provider === "credentials" ||
-      //   account.provider === "github"
-      // ) {
-      //   if (user.id !== undefined) {
-      //     try {
-      //       const existingWorkspace = await prisma.workspace.findFirst({
-      //         where: {
-      //           ownerId: user.id,
-      //         },
-      //       });
-
-      //       if (!existingWorkspace) {
-      //         await prisma.workspace.create({
-      //           data: {
-      //             ownerId: user.id,
-      //             name: "New workspace",
-      //             projects: {
-      //               create: {
-      //                 name: "First project",
-      //                 description: "Welcome to your first project!",
-      //                 columns: {
-      //                   create: [
-      //                     { name: "Backlog", type: "BACKLOG" },
-      //                     { name: "To do", type: "TODO" },
-      //                     { name: "In progress", type: "IN_PROGRESS" },
-      //                     { name: "Done", type: "DONE" },
-      //                   ],
-      //                 },
-      //               },
-      //             },
-      //           },
-      //         });
-      //       }
-      //     } catch (error) {
-      //       console.error("Error creating workspace for Google user:", error);
-      //     }
-      //   }
-      // }
-
+      if (!account || !user) return false;
       return true;
     },
 
@@ -135,7 +99,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.username = token.username as string;
         session.user.image = token.picture as string | undefined;
       }
-
       return session;
     },
 
@@ -144,7 +107,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.username = user.username;
       }
-
       return token;
     },
   },
