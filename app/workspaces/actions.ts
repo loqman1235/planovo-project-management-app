@@ -130,3 +130,51 @@ export const getWorkspaces = async () => {
     throw error;
   }
 };
+
+// export const getWorkspaceStats = async (workspaceId: string) => {
+//   try {
+//     const session = await auth();
+
+//     if (!session || !session.user) {
+//       throw Error("Unauthorized");
+//     }
+
+//     const [projects, tasks] = await prisma.$transaction([
+//       prisma.project.count({
+//         where: {
+//           workspaceId,
+//         },
+//       }),
+//       prisma.task.findMany({
+//         where: {
+//           column: {
+//             project: {
+//               workspaceId,
+//             },
+//           },
+//         },
+//       }),
+//     ]);
+
+//     const totalProjects = projects;
+//     const totalTasks = tasks.length;
+
+//     const assignedTasks = tasks.filter(
+//       (task) => task.status === "assigned"
+//     ).length;
+
+//     const completedTasks = tasks.filter(
+//       (task) => task.status === "completed"
+//     ).length;
+
+//     return {
+//       totalProjects,
+//       totalTasks,
+//       assignedTasks,
+//       completedTasks,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// };

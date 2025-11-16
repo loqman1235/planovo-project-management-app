@@ -17,15 +17,20 @@ export const WorkspaceContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [workspaces, setWorkspaces] = useState<WorkspaceWithProjects[] | []>(
-    []
-  );
+  const [workspaces, setWorkspaces] = useState<WorkspaceWithProjects[]>([]);
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
       try {
-        const workspaces = await getWorkspaces();
-        setWorkspaces(workspaces);
+        const result = await getWorkspaces();
+
+        if ("error" in result) {
+          console.error("Failed to fetch workspaces:", result.error);
+          setWorkspaces([]);
+        } else {
+          // Result is an array of workspaces
+          setWorkspaces(result);
+        }
       } catch (error) {
         console.error("Failed to fetch workspaces:", error);
         setWorkspaces([]);
@@ -36,7 +41,7 @@ export const WorkspaceContextProvider = ({
   }, []);
 
   return (
-    <workspaceContext.Provider value={{ workspaces: [] }}>
+    <workspaceContext.Provider value={{ workspaces }}>
       {children}
     </workspaceContext.Provider>
   );

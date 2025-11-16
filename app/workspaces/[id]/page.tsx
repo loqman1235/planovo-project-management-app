@@ -3,7 +3,7 @@ import { PeopleCard } from "./_components/PeopleCard";
 import { ProjectsCard } from "./_components/ProjectsCard";
 import { WorkspaceStats } from "./_components/WorkspaceStats";
 
-const WorkspacePage = () => {
+const WorkspacePage = async () => {
   return (
     <div>
       <WorkspaceStats />
