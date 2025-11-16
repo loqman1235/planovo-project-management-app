@@ -35,10 +35,20 @@ declare module "@auth/core/adapters" {
     image?: string;
   }
 }
+
+const adapter = process.env.DATABASE_URL ? PrismaAdapter(prisma) : undefined;
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter, // This will be undefined during build
   providers: [
-    Google,
-    Github,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    Github({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
     Credentials({
       name: "Credentials",
       credentials: {
@@ -83,9 +93,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  adapter: PrismaAdapter(prisma),
   secret: process.env.AUTH_SECRET,
   trustHost: true,
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     async signIn({ user, account }) {
       if (!account || !user) return false;
@@ -109,8 +121,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return token;
     },
-  },
-  session: {
-    strategy: "jwt",
   },
 });
