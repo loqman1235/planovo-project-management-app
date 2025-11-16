@@ -1,16 +1,30 @@
 import { PrismaClient } from "@prisma/client";
 import { Pool, neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import ws from "ws";
 
-neonConfig.webSocketConstructor = ws;
-neonConfig.poolQueryViaFetch = true;
-const connectionString = `${process.env.DATABASE_URL}`;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaNeon(pool);
+// Skip WebSocket configuration during build
+const isBuild = process.env.NEXT_PHASE === "phase-production-build";
+
+if (!isBuild) {
+  neonConfig.poolQueryViaFetch = true;
+}
 
 const prismaClientSingleton = () => {
-  return new PrismaClient({ adapter });
+  // During build, use standard Prisma client
+  if (isBuild || !process.env.DATABASE_URL) {
+    return new PrismaClient();
+  }
+
+  // In runtime, use Neon adapter
+  try {
+    const connectionString = process.env.DATABASE_URL;
+    const pool = new Pool({ connectionString });
+    const adapter = new PrismaNeon(pool);
+    return new PrismaClient({ adapter });
+  } catch (error) {
+    console.error("Neon adapter error:", error);
+    return new PrismaClient();
+  }
 };
 
 declare const globalThis: {
