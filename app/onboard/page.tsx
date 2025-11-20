@@ -13,12 +13,11 @@ import { getDefaultWorkspace } from "@/lib/workspace";
 const OnboardPage = async () => {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
     redirect("/sign-in");
   }
 
   const defaultWorkspace = await getDefaultWorkspace(session.user.id);
-
   if (defaultWorkspace) {
     redirect(`/workspaces/${defaultWorkspace.id}`);
   }

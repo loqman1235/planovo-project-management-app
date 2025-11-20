@@ -89,6 +89,33 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async signIn({ user, account }) {
       if (!account || !user) return false;
+
+      if (account.provider === "google" || account.provider === "github") {
+        try {
+          const prisma = (await import("./lib/prisma")).default;
+
+          // Check if user already exists
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+
+          if (!existingUser) {
+            // Create new user for OAuth sign-in
+            await prisma.user.create({
+              data: {
+                email: user.email!,
+                name: user.name || "",
+                username: user.email!.split("@")[0],
+                image: user.image || null,
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Error creating OAuth user:", error);
+          return false;
+        }
+      }
+
       return true;
     },
 
@@ -102,10 +129,27 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.username = user.username;
+      } else if (
+        account &&
+        (account.provider === "google" || account.provider === "github")
+      ) {
+        // For OAuth, fetch the user from database to get the id
+        try {
+          const prisma = (await import("./lib/prisma")).default;
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email! },
+          });
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.username = dbUser.username || "";
+          }
+        } catch (error) {
+          console.error("Error fetching user in JWT callback:", error);
+        }
       }
       return token;
     },
